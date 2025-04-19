@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.datn.model.Issue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,11 +43,11 @@ public class ProjectServiceImpl implements ProjectService {
 			createdProject.setCategory(project.getCategory());
 			createdProject.setDescription(project.getDescription());
 			createdProject.getTeam().add(user);
-
+			createdProject.setStatus("pending");
 			System.out.println(createdProject);
-			Project savedProject=projectRepository.save(project);
+			Project savedProject=projectRepository.save(createdProject);
 
-			savedProject.getTeam().add(user);
+//			savedProject.getTeam().add(user);
 
 			Chat chat = new Chat();
 			chat.setProject(savedProject);
@@ -183,7 +184,27 @@ public class ProjectServiceImpl implements ProjectService {
 	        
 	        throw new ProjectException("no project found with id "+projectId);
 	    }
-	
-	    
+
+	private void updateProjectStatus(Project project) {
+		if (project.getIssues() == null || project.getIssues().isEmpty()) {
+			project.setStatus("pending");
+		} else {
+			boolean allDone = true;
+			for (Issue issue : project.getIssues()) {
+				if (!"done".equals(issue.getStatus())) {
+					allDone = false;
+					break;
+				}
+			}
+			project.setStatus(allDone ? "done" : "in_progress");
+		}
+	}
+
+	@Override
+	public void updateProjectStatus(Long projectId) throws ProjectException {
+		Project project = getProjectById(projectId);
+		updateProjectStatus(project);
+		projectRepository.save(project);
+	}
 	    
 }

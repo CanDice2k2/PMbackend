@@ -15,7 +15,7 @@ public interface IssueService {
 
 	    Optional<Issue> getIssueById(Long issueId) throws IssueException;
 
-	List<Issue> getIssueByProjectId(Long projectId) throws ProjectException;
+		List<Issue> getIssueByProjectId(Long projectId) throws ProjectException;
 
 	    Issue createIssue(IssueRequest issue,Long userid) throws UserException, IssueException, ProjectException;
 
@@ -33,6 +33,6 @@ public interface IssueService {
 
 		Issue removeUserFromIssue(Long issueId, Long userId) throws IssueException;
 
-		Issue updateStatus(Long issueId, String status) throws IssueException;
+		Issue updateStatus(Long issueId, String status) throws IssueException, ProjectException;
 
 }

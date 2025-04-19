@@ -77,9 +77,10 @@ public class IssueServiceImpl implements IssueService {
          
 		// Set the project for the issue
 		issue.setProject(project);
-
+		issueRepository.save(issue);
+		projectService.updateProjectStatus(issue.getProjectID());
 		// Save the issue
-		return issueRepository.save(issue);
+		return issue;
 	}
 
 	@Override
@@ -220,13 +221,14 @@ public class IssueServiceImpl implements IssueService {
 	}
 
 	@Override
-	public Issue updateStatus(Long issueId, String status) throws IssueException {
+	public Issue updateStatus(Long issueId, String status) throws IssueException, ProjectException {
 		Optional<Issue> optionalIssue=issueRepository.findById(issueId);
 		if(optionalIssue.isEmpty()){
 			throw new IssueException("issue not found");
 		}
 		Issue issue=optionalIssue.get();
 		issue.setStatus(status);
+		projectService.updateProjectStatus(issue.getProject().getId());
 
 		return issueRepository.save(issue);
 	}

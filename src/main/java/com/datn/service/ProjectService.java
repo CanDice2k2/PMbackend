@@ -31,6 +31,5 @@ public interface ProjectService {
 
 	Chat getChatByProjectId(Long projectId) throws ProjectException, ChatException;
 
-
-	
+    void updateProjectStatus(Long projectId) throws ProjectException;
 }
